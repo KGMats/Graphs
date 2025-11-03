@@ -239,8 +239,6 @@ void testHeuristics(const Graph* graph, bool heuristicFunction(const Graph*, uin
     }
 
 
-    nanosleep((const struct timespec[]){{120, 500000000L}}, NULL);
-
     timespec_get(&end, TIME_UTC);
 
     int64_t delta_ns = end.tv_nsec - start.tv_nsec;

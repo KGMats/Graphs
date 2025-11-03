@@ -32,4 +32,6 @@ add_executable(SemNome main.c
         Meta-Heuristics/grasp.h
         Heuristics/fullRandomHeuristic.c
         Heuristics/fullRandomHeuristic.h
+        Heuristics/farthestFromActivationHeuristic.c
+        Heuristics/farthestFromActivationHeuristic.h
 )
