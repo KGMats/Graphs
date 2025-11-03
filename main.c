@@ -15,10 +15,10 @@ int main(const int argc, char** argv) {
     }
     Graph* graph = createGraphFromFilename(filename);
 
-    // testLocalSearch(graph, bridgeHeuristic, hillClimbSimple);
-    // testHeuristics(graph, bridgeHeuristic);
-    int sol = GRASP(graph, 10, time(NULL), fullRandomHeuristic, hillClimbSimple);
-    printf("%d\n", sol);
+    // testLocalSearch(graph, farthestFromActivationHeuristic, hillClimbSimple);
+    testHeuristics(graph, farthestFromActivationHeuristic);
+    // int sol = GRASP(graph, 10, time(NULL), fullRandomHeuristic, hillClimbSimple);
+    // printf("%d\n", sol);
 
     freeGraph(graph);
     return 0;

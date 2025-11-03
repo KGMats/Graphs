@@ -9,6 +9,7 @@
 #include "bridgeHeuristic.h"
 #include "hillClimbLocalSearch.h"
 #include "fullRandomHeuristic.h"
+#include "farthestFromActivationHeuristic.h"
 
 // Meta-Heuristicas
 #include "grasp.h"
