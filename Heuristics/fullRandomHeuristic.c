@@ -13,6 +13,7 @@ bool fullRandomHeuristic(const Graph *graph, uint64_t *result, uint64_t initialA
         result[i] = rand() % graph->n_nodes;
     }
 
-    partialPropagate(graph, initialActiveNodes, result);
+    PropagationResult propagationResult = partialPropagate(graph, initialActiveNodes, result);
+    free(propagationResult.activated_nodes);
     return (graph->n_nodes == countActiveNodes(graph));
 }

@@ -5,9 +5,7 @@
 #include <string.h>
 #include "farthestFromActivationHeuristic.h"
 
-bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, uint64_t initialActiveNodes)
-{
-
+bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, uint64_t initialActiveNodes) {
     if (initialActiveNodes < 1)
     {
         return false;
@@ -28,7 +26,8 @@ bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, uint6
     }
 
 
-    partialPropagate(graph,1, &ID);
+    PropagationResult propagationResult = partialPropagate(graph, 1, &ID);
+    free(propagationResult.activated_nodes);
 
     tuple *list = malloc(sizeof(tuple) * graph->n_nodes);
     for (uint64_t i = 0; i < graph->n_nodes;i++)
@@ -39,9 +38,6 @@ bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, uint6
     }
 
     initialActiveNodes--;
-
-    char *previousState = malloc((graph->n_nodes / 8) + 1);
-    char *hasBeenUpdated = malloc((graph->n_nodes / 8) + 1);
 
 
     while (initialActiveNodes >= 1)
@@ -58,34 +54,20 @@ bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, uint6
             }
         }
 
-        memcpy(previousState, graph->active_nodes, (graph->n_nodes / 8) + 1);
-        memset(hasBeenUpdated, 0, (graph->n_nodes / 8) + 1);
-
-        partialPropagate(graph, 1, &ID);
+        PropagationResult p = partialPropagate(graph, 1, &ID);
 
 
-        for (int i = 0; i < graph->n_nodes;i++)
-        {
-            if (getNodeState(graph->active_nodes, i) != getNodeState(previousState, i))
-            {
-                for (int j = 0; j < graph->nodes[i]->n_neighbors; j++)
-                {
-                    Node* node = graph->nodes[i]->neighbors[j];
-                    if (!getNodeState(hasBeenUpdated, node->ID))
-                    {
-                        setNodeState(hasBeenUpdated, node->ID, 1);
-                        list[node->ID].degree = (node->n_neighbors / 2.0) - node->n_active_neighbors;
-                    }
-
-                }
+        for (int i = 0; i < p.count; i++) {
+            for (int j = 0; j < graph->nodes[p.activated_nodes[i]]->n_neighbors; j++) {
+                Node *node = graph->nodes[p.activated_nodes[i]]->neighbors[j];
+                list[node->ID].degree = (node->n_neighbors / 2.0) - node->n_active_neighbors;
             }
         }
+        free(p.activated_nodes);
 
         initialActiveNodes--;
     }
 
-    free(previousState);
-    free(hasBeenUpdated);
     free(list);
     return runTest(graph, result, initialActiveNodes);
 

@@ -29,8 +29,9 @@ bool activationFunction(const Node *node)
 
 // Função que percorre o grafo e verifica quais nós satisfazem a função
 // de ativação. Itera até que não hajam mais nós que possam ser ativados.
-int propagate(const Graph* graph) {
-    int changed = 0;
+PropagationResult propagate(const Graph *graph) {
+    uint64_t *activated_nodes = malloc(sizeof(uint64_t) * graph->n_nodes);
+    uint64_t new_count = 0;
 
     for (int i = 0; i < graph->n_nodes; i++) {
         const Node* n1 = graph->nodes[i];
@@ -41,7 +42,7 @@ int propagate(const Graph* graph) {
 
         if (activationFunction(n1)) {
             setNodeState(graph->active_nodes, i, 1);
-            changed = 1;
+            activated_nodes[new_count++] = i;
 
             for (uint64_t j = 0; j < n1->n_neighbors; j++) {
                 n1->neighbors[j]->n_active_neighbors++;
@@ -49,7 +50,8 @@ int propagate(const Graph* graph) {
         }
     }
 
-    return changed;
+    PropagationResult result = {new_count, activated_nodes};
+    return result;
 }
 
 
@@ -57,7 +59,8 @@ int propagate(const Graph* graph) {
 // Função que verifica se um dado conjunto de nós (activeNodeIDs)
 // é capaz de ativar inteiramente o grafo
 bool runTest(const Graph* graph, const uint64_t *activeNodeIDs, const uint64_t n_ids) {
-    partialPropagate(graph, n_ids, activeNodeIDs);
+    PropagationResult result = partialPropagate(graph, n_ids, activeNodeIDs);
+    free(result.activated_nodes);
 
     uint64_t counter = countActiveNodes(graph);
 
@@ -69,8 +72,11 @@ bool runTest(const Graph* graph, const uint64_t *activeNodeIDs, const uint64_t n
 // Função similar a propagate, mas ao invés de verificar o grafo inteiramente
 // em busca dos nós para ativar, ativa apenas os nós dados por changed_nodes
 // e iterativamente os nós que serão ativados por propagação destes.
-uint64_t partialPropagate(const Graph *graph, const uint64_t n_changed, const uint64_t *changed_nodes) {
-    if (n_changed == 0) return 0;
+PropagationResult partialPropagate(const Graph *graph, const uint64_t n_changed, const uint64_t *changed_nodes) {
+    if (n_changed == 0) {
+        PropagationResult result = {0, NULL};
+        return result;
+    }
     char *inQueue = calloc((graph->n_nodes / 8) + 1, sizeof(char));
 
     uint64_t *queue = malloc(sizeof(uint64_t) * graph->n_nodes);
@@ -85,6 +91,7 @@ uint64_t partialPropagate(const Graph *graph, const uint64_t n_changed, const ui
         }
     }
 
+    uint64_t *newly_activated = malloc(sizeof(uint64_t) * graph->n_nodes);
     uint64_t new_count = 0;
 
     while (front < back) {
@@ -104,22 +111,27 @@ uint64_t partialPropagate(const Graph *graph, const uint64_t n_changed, const ui
                     queue[back++] = neighbor->ID;
                     setNodeState(inQueue, neighbor->ID, 1);
                 }
-                new_count++;
+                newly_activated[new_count++] = neighbor->ID;
             }
         }
     }
 
     free(queue);
     free(inQueue);
-    return new_count;
+
+    PropagationResult result = {new_count, newly_activated};
+    return result;
 }
 
 
 // Função similar ao partialPropagate, mas aqui ao invés de ativarmos os nós
 // dados por changed_nodes, desativamos eles e possivelmente os nós vizinhos
 // de forma iterativa.
-uint64_t partialReversePropagate(const Graph *graph, const uint64_t n_changed, const uint64_t *changed_nodes) {
-    if (n_changed == 0) return 0;
+PropagationResult partialReversePropagate(const Graph *graph, const uint64_t n_changed, const uint64_t *changed_nodes) {
+    if (n_changed == 0) {
+        PropagationResult result = {0, NULL};
+        return result;
+    }
 
     uint64_t *queue = malloc(sizeof(uint64_t) * graph->n_nodes);
 
@@ -134,6 +146,7 @@ uint64_t partialReversePropagate(const Graph *graph, const uint64_t n_changed, c
         setNodeState(inQueue, changed_nodes[i], 1);
     }
 
+    uint64_t *deactivated_nodes = malloc(sizeof(uint64_t) * graph->n_nodes);
     uint64_t new_count = 0;
     while (front < back) {
         const uint64_t nodeID = queue[front++];
@@ -151,19 +164,26 @@ uint64_t partialReversePropagate(const Graph *graph, const uint64_t n_changed, c
                     queue[back++] = neighbor->ID;
                     setNodeState(inQueue, neighbor->ID, 1);
                 }
-                new_count++;
+                deactivated_nodes[new_count++] = neighbor->ID;
             }
         }
     }
     free(inQueue);
     free(queue);
-    return new_count;
+
+    PropagationResult result = {new_count, deactivated_nodes};
+    return result;
 }
 
 
 // TODO: Fazer essa função funcionar
-uint64_t partialReversePropagateBlackListed(const Graph *graph, const uint64_t n_changed, const uint64_t *changed_nodes, const uint64_t *black_list, const uint64_t black_list_size) {
-    if (n_changed == 0) return 0;
+PropagationResult partialReversePropagateBlackListed(const Graph *graph, const uint64_t n_changed,
+                                                     const uint64_t *changed_nodes, const uint64_t *black_list,
+                                                     const uint64_t black_list_size) {
+    if (n_changed == 0) {
+        PropagationResult result = {0, NULL};
+        return result;
+    }
 
     uint64_t *queue = malloc(sizeof(uint64_t) * graph->n_nodes);
     uint64_t front = 0;
@@ -174,6 +194,7 @@ uint64_t partialReversePropagateBlackListed(const Graph *graph, const uint64_t n
         setNodeState(graph->active_nodes, changed_nodes[i], 0);
     }
 
+    uint64_t *deactivated_nodes = malloc(sizeof(uint64_t) * graph->n_nodes);
     uint64_t new_count = 0;
 
     while (front < back) {
@@ -202,15 +223,15 @@ uint64_t partialReversePropagateBlackListed(const Graph *graph, const uint64_t n
                     setNodeState(graph->active_nodes, neighbor->ID, 0);
                     queue[back++] = neighbor->ID;
 
-                    new_count++;
+                    deactivated_nodes[new_count++] = neighbor->ID;
                 }
-
             }
         }
     }
 
     free(queue);
-    return new_count;
+    PropagationResult result = {new_count, deactivated_nodes};
+    return result;
 }
 
 
@@ -303,9 +324,8 @@ void testLocalSearch(const Graph *graph, bool heuristicFunction(const Graph*, ui
     const uint64_t bestLocal = localSearchFunction(graph, bestSolution, best);
 
     deactivateAll(graph);
-    activateFromIDArray(graph, bestSolution, bestLocal);
-
-    do {} while (propagate(graph));
+    PropagationResult p = partialPropagate(graph, bestLocal, bestSolution);
+    free(p.activated_nodes);
 
     if (countActiveNodes(graph) != graph->n_nodes) {
         printf("A solução da busca local não é válida!");

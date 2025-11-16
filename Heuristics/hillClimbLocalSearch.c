@@ -24,7 +24,7 @@ uint64_t hillClimbSimple(const Graph *graph, uint64_t *bestSolution, uint64_t nA
 
     while (melhorou) {
         melhorou = false;
-        // const uint64_t MAX_ITERATIONS = (graph->n_nodes - nActiveNodes + 2) * nActiveNodes * (nActiveNodes - 1) / 2;
+        //const uint64_t MAX_ITERATIONS = (graph->n_nodes - nActiveNodes + 2) * nActiveNodes * (nActiveNodes - 1) / 2;
 
         // Nao tem como "Tirar dois e colocar um" se não tiverem pelo menos dois ativos.
         if (nActiveNodes < 2) break;
@@ -48,7 +48,8 @@ uint64_t hillClimbSimple(const Graph *graph, uint64_t *bestSolution, uint64_t nA
             removeIDFromList(bestSolution, toRemove[0], &active_index);
             removeIDFromList(bestSolution, toRemove[1], &active_index);
             deactivateAll(graph);
-            partialPropagate(graph, active_index, bestSolution);
+            PropagationResult p = partialPropagate(graph, active_index, bestSolution);
+            free(p.activated_nodes);
 
             for (uint64_t j = 0; j < graph->n_nodes; j++) {
                 if (!getNodeState(graph->active_nodes, j)) inactiveList[inactive_index++] = j;
@@ -58,7 +59,8 @@ uint64_t hillClimbSimple(const Graph *graph, uint64_t *bestSolution, uint64_t nA
                 *toActivate = inactiveList[rand() % inactive_index];
 
                 // Testando se é uma solução válida
-                partialPropagate(graph, 1, toActivate);
+                PropagationResult p2 = partialPropagate(graph, 1, toActivate);
+                free(p2.activated_nodes);
                 const uint64_t totalAtivos = countActiveNodes(graph);
 
                 if (totalAtivos == graph->n_nodes) {
