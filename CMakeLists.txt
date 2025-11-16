@@ -34,4 +34,6 @@ add_executable(SemNome main.c
         Heuristics/fullRandomHeuristic.h
         Heuristics/farthestFromActivationHeuristic.c
         Heuristics/farthestFromActivationHeuristic.h
+        IndexedHeap.c
+        IndexedHeap.h
 )
