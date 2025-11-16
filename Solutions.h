@@ -4,12 +4,15 @@
 
 #include "Graph.h"
 
-// Heuristicas
-#include "MaximumDegreeHeuristic.h"
-#include "bridgeHeuristic.h"
-#include "hillClimbLocalSearch.h"
-#include "fullRandomHeuristic.h"
-#include "farthestFromActivationHeuristic.h"
+// Heuristicas Deterministicas
+#include "Heuristics/deterministic/MaximumDegreeHeuristic.h"
+#include "Heuristics/deterministic/bridgeHeuristic.h"
+#include "Heuristics/deterministic/hillClimbLocalSearch.h"
+#include "Heuristics/deterministic/fullRandomHeuristic.h"
+#include "Heuristics/deterministic/farthestFromActivationHeuristic.h"
+
+// Heuristicas probabilisticas
+#include "Heuristics/probabilistic/farthestFromActivation_r.h"
 
 // Meta-Heuristicas
 #include "grasp.h"

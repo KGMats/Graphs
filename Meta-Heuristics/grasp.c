@@ -12,7 +12,7 @@ uint64_t GRASP(Graph *graph, unsigned int max_iterations,
         srand(seed);
         float multiplier = 0.5f;
 
-        uint64_t best_solution = 99999; // 0 indica que não tem solucao
+        uint64_t best_solution = UINT64_MAX; // 0 indica que não tem solucao
         uint64_t *result = malloc(sizeof(uint64_t) * graph->n_nodes);
 
         while (max_iterations != 0) {
@@ -31,7 +31,7 @@ uint64_t GRASP(Graph *graph, unsigned int max_iterations,
                         continue;
                 }
                 best_solution = (best_solution < solution_size) ? best_solution : solution_size;
-                printf("%d\n", best_solution);
+                printf("%ld\n", best_solution);
                 solution_size = localSearchFunction(graph, result, best_solution);
                 best_solution = (best_solution < solution_size) ? best_solution : solution_size;
         }
