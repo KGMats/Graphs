@@ -5,7 +5,7 @@
 #include "IndexedHeap.h"
 
 static double calculateMissing(const Node *node) {
-    return (node->n_neighbors / 2.0) - (double)node->n_active_neighbors;
+    return (node->n_neighbors / 2.0) - (double) node->n_active_neighbors;
 }
 
 bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, const uint64_t initialActiveNodes) {
@@ -31,7 +31,7 @@ bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, const
         // Getting the top of the heap
         HeapElement maxElement = extractMax(heap);
         uint64_t ID = maxElement.ID;
-        
+
         bool wasAlreadyActive = getNodeState(graph->active_nodes, ID);
 
 
@@ -50,10 +50,10 @@ bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, const
             for (uint64_t i = 0; i < selectedNode->n_neighbors; i++) {
                 Node *neighbor = selectedNode->neighbors[i];
                 uint64_t neighborID = neighbor->ID;
-                
+
                 if (!getNodeState(graph->active_nodes, neighborID)) {
                     double newValue = calculateMissing(neighbor);
-                    update(heap, neighborID, newValue); 
+                    update(heap, neighborID, newValue);
                 }
             }
         }
@@ -67,14 +67,14 @@ bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, const
             for (uint64_t j = 0; j < activatedNode->n_neighbors; j++) {
                 Node *neighbor = activatedNode->neighbors[j];
                 uint64_t neighborID = neighbor->ID;
-                
+
                 if (!getNodeState(graph->active_nodes, neighborID)) {
                     double newValue = calculateMissing(neighbor);
                     update(heap, neighborID, newValue);
                 }
             }
         }
-        
+
         free(p.activated_nodes);
         iterations--;
     }
