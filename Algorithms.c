@@ -278,7 +278,7 @@ void testHeuristics(const Graph* graph, bool heuristicFunction(const Graph*, uin
     if (best != 0) {
         printf("%llu/%llu Nos foram necessarios. Isso e %.5lf%% do total\n", best, n_nodes, 100. * ((double) best / (double) n_nodes));
 
-        printf("A execucao demorou %llu horas %llu minutos %llu segundos e %llu milisegundos", delta_hours, delta_minutes, delta_seconds, delta_milliseconds);
+        printf("A execucao demorou %llu horas %llu minutos %llu segundos e %llu milisegundos\n", delta_hours, delta_minutes, delta_seconds, delta_milliseconds);
         return;
 
 
@@ -357,7 +357,7 @@ void testLocalSearch(const Graph *graph, bool heuristicFunction(const Graph*, ui
             printf("%llu, ", bestSolution[i]);
         }
         printf("\n");
-        printf("A execucao demorou %llu horas %llu minutos %llu segundos e %llu milisegundos", delta_hours,
+        printf("A execucao demorou %llu horas %llu minutos %llu segundos e %llu milisegundos\n", delta_hours,
                delta_minutes, delta_seconds, delta_milliseconds);
 
         printf("--------------------------------------------------\n");

@@ -14,7 +14,7 @@
 
 // Função de busca local utilizando a estratégia "tira dois, põe um"
 uint64_t hillClimbSimple(const Graph *graph, uint64_t *bestSolution, uint64_t nActiveNodes) {
-    const uint64_t MAX_ITERATIONS = 1000;
+    const uint64_t MAX_ITERATIONS = 500;
     uint64_t *toRemove = malloc(sizeof(uint64_t) * 2);
     uint64_t *toActivate = malloc(sizeof(uint64_t) * 1);
     uint64_t *inactiveList = malloc(sizeof(uint64_t) * graph->n_nodes);
@@ -22,14 +22,16 @@ uint64_t hillClimbSimple(const Graph *graph, uint64_t *bestSolution, uint64_t nA
 
     bool melhorou = true;
 
+    uint32_t iteracao = 0;
     while (melhorou) {
+        iteracao++;
         melhorou = false;
         //const uint64_t MAX_ITERATIONS = (graph->n_nodes - nActiveNodes + 2) * nActiveNodes * (nActiveNodes - 1) / 2;
 
         // Nao tem como "Tirar dois e colocar um" se não tiverem pelo menos dois ativos.
         if (nActiveNodes < 2) break;
 
-        printf("Solucao atual: %llu\n", nActiveNodes);
+        printf("Iteração (%u): Solucao atual: %llu\n", iteracao, nActiveNodes);
 
         if (inactiveList == NULL) {
             perror("Erro na alocacao de memoria nas listas do Hill Climb");
