@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 
-#include "../../Graph.h"
+#include "../../include/Graph.h"
 
 uint64_t hillClimbSimple(const Graph *graph, uint64_t *bestSolution, uint64_t nActiveNodes);
 #endif //GRAFOS_HILLCLIMBLOCALSEARCH_H

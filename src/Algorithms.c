@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "Graph.h"
+#include "../include/Graph.h"
 #include "Solutions.h"
 #include "Stack.h"
 #include "Algorithms.h"

@@ -3,10 +3,10 @@
 #include <string.h>
 #include <time.h>
 
-#include "Algorithms.h"
-#include "Graph.h"
-#include "Solutions.h"
-#include "Heuristics/probabilistic/farthestFromActivation_r.h" // Importante para o GRASP
+#include "../include/Algorithms.h"
+#include "../include/Graph.h"
+#include "../Solutions.h"
+#include "../Heuristics/probabilistic/farthestFromActivation_r.h"
 
 int main(const int argc, char **argv) {
     // Semente aleatória baseada no tempo

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "farthestFromActivationHeuristic.h"
+#include "../../../include/Heuristics/deterministic/farthestFromActivationHeuristic.h"
 #include "Algorithms.h"
 #include "IndexedHeap.h"
 

@@ -4,7 +4,7 @@
 
 #include "Utils.h"
 #include "Algorithms.h"
-#include "MaximumDegreeHeuristic.h"
+#include "../../../include/Heuristics/deterministic/MaximumDegreeHeuristic.h"
 
 // Heuristica do número de Arestas
 bool maximumDegreeHeuristic(const Graph *graph, uint64_t *result, const uint64_t initialActiveNodes) {

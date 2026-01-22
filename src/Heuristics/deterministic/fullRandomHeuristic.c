@@ -2,7 +2,7 @@
 // Created by ra173048 on 10/27/25.
 //
 
-#include "fullRandomHeuristic.h"
+#include "../../../include/Heuristics/deterministic/fullRandomHeuristic.h"
 
 #include <stdlib.h>
 

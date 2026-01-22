@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "Graph.h"
+#include "../Graph.h"
 
 
 Graph *createGraph(const uint64_t n_nodes) {

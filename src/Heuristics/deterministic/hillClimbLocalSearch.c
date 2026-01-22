@@ -9,7 +9,7 @@
 
 #include "Utils.h"
 #include "Algorithms.h"
-#include "hillClimbLocalSearch.h"
+#include "../../../include/Heuristics/deterministic/hillClimbLocalSearch.h"
 
 
 // Função de busca local utilizando a estratégia "tira dois, põe um"
