@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "../include/Graph.h"
-#include "Solutions.h"
+#include "../include/Solutions.h"
 #include "Stack.h"
 #include "Algorithms.h"
 

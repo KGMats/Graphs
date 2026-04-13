@@ -2,12 +2,12 @@
 #define SEMNOME_SOLUTIONS_H
 
 
-#include "../include/Graph.h"
+#include "Graph.h"
 
 // Heuristicas Deterministicas
 #include "../Heuristics/deterministic/MaximumDegreeHeuristic.h"
 #include "../Heuristics/deterministic/bridgeHeuristic.h"
-#include "../Heuristics/deterministic/hillClimbLocalSearch.h"
+#include "hillClimb.h"
 #include "../Heuristics/deterministic/fullRandomHeuristic.h"
 #include "../Heuristics/deterministic/farthestFromActivationHeuristic.h"
 

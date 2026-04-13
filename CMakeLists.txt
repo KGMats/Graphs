@@ -9,7 +9,7 @@ add_library(GraphsSolverLib
         include/Graph.h
         src/Algorithms.c
         include/Algorithms.h
-        src/Solutions.h
+        include/Solutions.h
         src/Stack.h
         src/Stack.c
         src/LinkedList.h
@@ -21,9 +21,8 @@ add_library(GraphsSolverLib
         include/Heuristics/deterministic/MaximumDegreeHeuristic.h
         src/Heuristics/deterministic/bridgeHeuristic.c
         include/Heuristics/deterministic/bridgeHeuristic.h
-        src/Heuristics/deterministic/hillClimbLocalSearch.c
-        include/Heuristics/deterministic/hillClimbLocalSearch.h
-        src/Heuristics/deterministic/hillClimbLocalSearch.c
+        src/LocalSearch/hillClimb.c
+        include/LocalSearch/hillClimb.h
         src/Meta-Heuristics/grasp.c
         include/Meta-Heuristics/grasp.h
         src/Heuristics/deterministic/fullRandomHeuristic.c
@@ -43,6 +42,10 @@ target_include_directories(GraphsSolverLib
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Heuristics/deterministic
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Heuristics/probabilistic
         ${CMAKE_CURRENT_SOURCE_DIR}/include/Meta-Heuristics
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/LocalSearch
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+
+add_subdirectory(tools)
