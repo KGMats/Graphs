@@ -3,7 +3,6 @@ project(GraphSolver C)
 
 set(CMAKE_C_STANDARD 11)
 
-
 add_library(GraphsSolverLib
         src/Graph.c
         include/Graph.h
@@ -15,8 +14,8 @@ add_library(GraphsSolverLib
         src/LinkedList.h
         src/Utils.c
         src/Utils.h
-        src/Tarjan.c
-        src/Tarjan.h
+        src/Heuristics/deterministic/Tarjan.c
+        src/Heuristics/deterministic/Tarjan.h
         src/Heuristics/deterministic/MaximumDegreeHeuristic.c
         include/Heuristics/deterministic/MaximumDegreeHeuristic.h
         src/Heuristics/deterministic/bridgeHeuristic.c
