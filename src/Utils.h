@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "../include/Graph.h"
+#include "../include/unsigned/Graph.h"
 
 typedef struct {
     uint64_t ID;

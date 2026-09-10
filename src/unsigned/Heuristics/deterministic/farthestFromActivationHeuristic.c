@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../../../include/Heuristics/deterministic/farthestFromActivationHeuristic.h"
-#include "Algorithms.h"
+#include "unsigned/Heuristics/deterministic/farthestFromActivationHeuristic.h"
+#include "unsigned/Algorithms.h"
 #include "IndexedHeap.h"
 
 static double calculateMissing(const Node *node) {

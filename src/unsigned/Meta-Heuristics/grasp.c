@@ -5,7 +5,7 @@
 #include <time.h>
 #include <string.h>
 
-#include "Graph.h"
+#include "unsigned/Graph.h"
 
 uint64_t GRASP(Graph *graph, unsigned int max_iterations,
                const int seed, const bool randomGreedyFunction(const Graph *, uint64_t *result, const uint64_t),

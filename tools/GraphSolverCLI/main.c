@@ -3,10 +3,10 @@
 #include <string.h>
 #include <time.h>
 
-#include "Algorithms.h"
-#include "farthestFromActivation_r.h"
-#include "Graph.h"
-#include "Solutions.h"
+#include "unsigned/Algorithms.h"
+#include "unsigned/Heuristics/probabilistic/farthestFromActivation_r.h"
+#include "unsigned/Graph.h"
+#include "unsigned/Solutions.h"
 
 int main(const int argc, char **argv) {
     // Semente aleatória baseada no tempo

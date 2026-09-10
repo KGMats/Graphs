@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "../../Stack.h"
-#include "../../Tarjan.h"
+#include "Stack.h"
+#include "unsigned/Heuristics/deterministic/Tarjan.h"
 
 
 

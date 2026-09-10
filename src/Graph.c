@@ -1,9 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
-
-#include "../Graph.h"
+#include "unsigned/Graph.h"
 
 
 Graph *createGraph(const uint64_t n_nodes) {
@@ -40,13 +38,6 @@ Node *createNode(const Graph *graph, const uint64_t ID, const uint64_t n_edges) 
     return node;
 }
 
-void connectNodes(Graph* graph, const Node *n1, const Node *n2) {
-    Edge *edge = malloc(sizeof(Edge));
-    edge->node1 = n1;
-    edge->node2 = n2;
-    graph->edges[graph->n_edges] = edge;
-    graph->n_edges++;
-}
 
 Graph *createGraphFromFilename(const char *filename) {
 
@@ -78,11 +69,6 @@ Graph *createGraphFromFilename(const char *filename) {
     }
 
     Graph *graph = createGraph(n_nodes);
-    graph->edges = malloc(sizeof (Edge*) * n_total_edges);
-    if (!graph->edges) {
-        perror("Erro ao alocar edges");
-        exit(EXIT_FAILURE);
-    }
 
     for (int i = 0; i < n_nodes; i++) {
         createNode(graph, i, n_edges[i]);
@@ -101,7 +87,6 @@ Graph *createGraphFromFilename(const char *filename) {
 
         Node *n2 = graph->nodes[id2];
         n2->neighbors[n2->n_edges++] = graph->nodes[id1];
-        connectNodes(graph, n1, n2);
     }
 
     fclose(file);
@@ -145,7 +130,7 @@ bool getNodeState(const char* activeNodesArray, const uint64_t id) {
 void activateFromFile(const Graph *graph, const char *filename) {
     FILE *file = fopen(filename, "r");
     uint64_t id;
-    while (1 == fscanf(file, "%llu", &id)) {
+    while (1 == fscanf(file, "%lu", &id)) {
         setNodeState(graph->active_nodes, id, 1);
         const Node* node = graph->nodes[id];
         for (uint64_t i = 0; i < node->n_neighbors; i++) {
@@ -191,15 +176,6 @@ void freeGraph(Graph *graph) {
     }
 
 
-    if (graph->edges) {
-        for (uint64_t i = 0; i < graph->n_edges; i++) {
-            if (graph->edges[i])
-                free(graph->edges[i]);
-        }
-        free(graph->edges);
-    }
-
-
     if (graph->active_nodes)
         free(graph->active_nodes);
 
@@ -208,20 +184,24 @@ void freeGraph(Graph *graph) {
 
 
 
-void saveSolution(Graph *graph, const char* filename) {
+void saveGraphToFile(Graph *graph, const char* filename) {
     FILE *file = fopen(filename, "w");
     if (!file) {
-        printf("Erro ao tentar abrir o arquivo %s", filename);
+        perror("Erro ao tentar abrir o arquivo");
         exit(EXIT_FAILURE);
     }
-
 
     for (uint64_t i = 0; i < graph->n_nodes; i++) {
         Node* node = graph->nodes[i];
         if (getNodeState(graph->active_nodes, node->ID)) {
-            printf("%ld", node->n_active_neighbors);
+            fprintf(file, "%lu\n", node->ID);
         }
     }
+    fclose(file);
+}
+
+void saveSolution(Graph *graph, const char* filename) {
+    saveGraphToFile(graph, filename);
 }
 
 uint64_t countActiveNodes(const Graph* graph) {

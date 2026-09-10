@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "../include/Graph.h"
-#include "../include/Solutions.h"
+#include "unsigned/Graph.h"
+#include "unsigned/Solutions.h"
 #include "Stack.h"
-#include "Algorithms.h"
+#include "unsigned/Algorithms.h"
 
 #include <time.h>
 #include <sys/types.h>

@@ -7,9 +7,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 
-#include "utils.h"
-#include "Algorithms.h"
-#include "hillClimb.h"
+#include "unsigned/Algorithms.h"
+#include "unsigned/LocalSearch/hillClimb.h"
 
 #include "Utils.h"
 

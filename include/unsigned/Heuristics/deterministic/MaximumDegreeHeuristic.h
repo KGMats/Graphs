@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "../../include/Graph.h"
+#include "../../../unsigned/Graph.h"
 
 bool maximumDegreeHeuristic(const Graph *graph, uint64_t *result, uint64_t initialActiveNodes);
 

@@ -5,9 +5,9 @@
 #include <stdlib.h>
 
 #include "Utils.h"
-#include "Algorithms.h"
-#include "Tarjan.h"
-#include "../../../include/Heuristics/deterministic/bridgeHeuristic.h"
+#include "unsigned/Algorithms.h"
+#include "unsigned/Heuristics/deterministic/Tarjan.h"
+#include "unsigned/Heuristics/deterministic/bridgeHeuristic.h"
 
 // Heuristica das pontes.
 bool bridgeHeuristic(const Graph *graph, uint64_t *result, const uint64_t initialActiveNodes) {

@@ -6,7 +6,7 @@
 #define SEMNOME_LINKEDLIST_H
 
 #include <stdint.h>
-#include "../include/Graph.h"
+#include "../include/unsigned/Graph.h"
 
 typedef struct StackFrame {
     Node* u;
