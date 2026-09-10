@@ -31,6 +31,13 @@ add_library(GraphsSolverLib
         src/IndexedHeap.h
         src/unsigned/Heuristics/probabilistic/farthestFromActivation_r.c
         include/unsigned/Heuristics/probabilistic/farthestFromActivation_r.h
+        include/signed/SignedGraph.h
+        src/signed/SignedGraph.c
+        include/signed/Heuristics/deterministic/MaximumDegreeHeuristic.h
+        include/signed/Heuristics/deterministic/Tarjan.h
+        include/signed/Heuristics/deterministic/bridgeHeuristic.h
+        include/signed/Heuristics/deterministic/farthestFromActivationHeuristic.h
+        include/signed/Heuristics/deterministic/fullRandomHeuristic.h
 )
 
 target_compile_features(GraphsSolverLib PUBLIC)
