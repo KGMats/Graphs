@@ -8,8 +8,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "signed/SignedGraph.h"
+#include "signed/signedGraph.h"
 
-bool bridgeHeuristic(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes);
+bool bridgeHeuristicSigned(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t steps);
 
 #endif

@@ -16,7 +16,7 @@ struct SignedNode {
     SignedNode **neighbors;
 };
 
-typedef struct SignedGraph {
+typedef struct signedGraph {
     uint64_t n_nodes;
     SignedNode **nodes;
     uint64_t *active_nodes;

@@ -1,14 +1,16 @@
 #include <stdlib.h>
-#include "signed/Heuristics/deterministic/fullRandomHeuristic.h"
+#include "signed/algorithms.h"
+#include "signed/heuristics/deterministic/fullRandomHeuristic.h"
 
 
-bool fullRandomHeuristic(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes)
+bool fullRandomHeuristicSigned(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t steps)
 {
     for (uint64_t i = 0; i < initialActiveNodes; i++) {
         result[i] = rand() % graph->n_nodes;
     }
 
-    PropagationResult propagationResult = partialPropagate(graph, initialActiveNodes, result);
+    const PropagationResult propagationResult = signedPartialPropagate(graph, initialActiveNodes, result, steps);
     free(propagationResult.activated_nodes);
-    return (graph->n_nodes == countActiveNodes(graph));
+    // TODO: Pensar nos valores de retorno nas funcoes de propagacao. Usar número de vértices positivamente influenciados?
+    return 1;
 }

@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "signed/SignedGraph.h"
+#include "signed/signedGraph.h"
 
-bool maximumDegreeHeuristic(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t t);
+bool maximumDegreeHeuristicSigned(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t t);
 
 #endif //SIGNED_MAXIMUMDEGREEHEURISTIC_H

@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "signed/SignedGraph.h"
+#include "signed/signedGraph.h"
 
 #ifndef PROPAGATION_RESULT_DEFINED
 #define PROPAGATION_RESULT_DEFINED
@@ -15,19 +15,19 @@ typedef struct {
 } PropagationResult;
 #endif
 
-bool activationFunction(SignedNode *node);
+bool signedActivationFunction(SignedNode *node);
 
-PropagationResult propagate(const SignedGraph *graph, uint64_t t);
+PropagationResult signedPropagate(const SignedGraph *graph, uint64_t t);
 
-PropagationResult partialPropagate(const SignedGraph *graph, uint64_t n_changed,
+PropagationResult signedPartialPropagate(const SignedGraph *graph, uint64_t n_changed,
                                    const uint64_t *changed_nodes, uint64_t t);
 
-PropagationResult partialReversePropagate(const SignedGraph *graph, uint64_t n_changed,
+PropagationResult signedPartialReversePropagate(const SignedGraph *graph, uint64_t n_changed,
                                           const uint64_t *changed_nodes, uint64_t t);
 
-bool runTest(const SignedGraph *graph, const uint64_t *activeNodeIDs, uint64_t n_ids, uint64_t t);
+bool signedRunTest(const SignedGraph *graph, const uint64_t *activeNodeIDs, uint64_t n_ids, uint64_t t);
 
-void testHeuristics(const SignedGraph *graph,
+void signedTestHeuristics(const SignedGraph *graph,
                     bool heuristicFunction(const SignedGraph *, uint64_t *, uint64_t, uint64_t),
                     uint64_t t);
 

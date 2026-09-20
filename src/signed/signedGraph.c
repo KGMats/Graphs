@@ -110,6 +110,7 @@ static const uint64_t POW3[40] = {
     4052555153018976267ULL
 };
 
+// Gets the state of a signed node. Returns 0 (neutral), 1 (positive) or -1 (negative)
 int getSignedNodeState(const uint64_t *activeNodesArray, const uint64_t id) {
     int signals[] = {0, 1, -1};
     uint64_t idx_chunk = id / 40;

@@ -4,13 +4,13 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
-#include "signed/SignedGraph.h"
-#include "signed/Algorithms.h"
+#include "signed/signedGraph.h"
+#include "signed/algorithms.h"
 #include "Utils.h"
 
 // Funcao utilizada para verificar se o número de vizinhos ativos
 // é suficiente para ativar o nó passado como argumento
-bool activationFunction(SignedNode *node)
+bool signedActivationFunction(SignedNode *node)
 {
     if (node->n_active_neighbors == 0)
     {
@@ -27,7 +27,7 @@ bool activationFunction(SignedNode *node)
 }
 
 // Função que percorre o grafo e propaga a influência de forma síncrona por até t passos.
-PropagationResult propagate(const SignedGraph *graph, const uint64_t t) {
+PropagationResult signedPropagate(const SignedGraph *graph, const uint64_t t) {
     uint64_t *activated_nodes = malloc(sizeof(uint64_t) * graph->n_nodes);
     uint64_t new_count = 0;
 
@@ -101,8 +101,7 @@ PropagationResult propagate(const SignedGraph *graph, const uint64_t t) {
 }
 
 // Função similar a propagate, mas ativa inicialmente os nós dados por changed_nodes
-// com estado +1 e propaga a influência de forma síncrona por até t passos.
-PropagationResult partialPropagate(const SignedGraph *graph, const uint64_t n_changed,
+PropagationResult signedPartialPropagate(const SignedGraph *graph, const uint64_t n_changed,
                                    const uint64_t *changed_nodes, const uint64_t t) {
     if (n_changed == 0) {
         PropagationResult result = {0, NULL};
@@ -127,17 +126,18 @@ PropagationResult partialPropagate(const SignedGraph *graph, const uint64_t n_ch
         }
     }
 
-    return propagate(graph, t);
+    return signedPropagate(graph, t);
 }
 
 // Função similar ao partialPropagate, mas aqui ao invés de ativarmos os nós
 // dados por changed_nodes, desativamos eles (estado 0) e propagamos as mudanças por até t passos.
-PropagationResult partialReversePropagate(const SignedGraph *graph, const uint64_t n_changed,
+PropagationResult signedPartialReversePropagate(const SignedGraph *graph, const uint64_t n_changed,
                                           const uint64_t *changed_nodes, const uint64_t t) {
     if (n_changed == 0) {
         PropagationResult result = {0, NULL};
         return result;
     }
+
 
     for (uint64_t i = 0; i < n_changed; i++) {
         uint64_t id = changed_nodes[i];
@@ -157,13 +157,13 @@ PropagationResult partialReversePropagate(const SignedGraph *graph, const uint64
         }
     }
 
-    return propagate(graph, t);
+    return signedPropagate(graph, t);
 }
 
 // Função que verifica se um dado conjunto de nós (activeNodeIDs)
 // é capaz de ativar inteiramente o grafo em até t passos
-bool runTest(const SignedGraph *graph, const uint64_t *activeNodeIDs, const uint64_t n_ids, const uint64_t t) {
-    PropagationResult result = partialPropagate(graph, n_ids, activeNodeIDs, t);
+bool signedRunTest(const SignedGraph *graph, const uint64_t *activeNodeIDs, const uint64_t n_ids, const uint64_t t) {
+    PropagationResult result = signedPartialPropagate(graph, n_ids, activeNodeIDs, t);
     free(result.activated_nodes);
 
     uint64_t counter = countActiveSignedNodes(graph);
@@ -171,7 +171,7 @@ bool runTest(const SignedGraph *graph, const uint64_t *activeNodeIDs, const uint
     return counter == graph->n_nodes;
 }
 
-void testHeuristics(const SignedGraph *graph,
+void signedTestHeuristics(const SignedGraph *graph,
                     bool heuristicFunction(const SignedGraph *, uint64_t *, uint64_t, uint64_t),
                     const uint64_t t) {
     uint64_t low = 1;
