@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "../../../unsigned/Graph.h"
+#include "unsigned/graph.h"
 
 bool bridgeHeuristic(const Graph *graph, uint64_t *result, uint64_t initialActiveNodes);
 

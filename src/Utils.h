@@ -7,14 +7,14 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "../include/unsigned/Graph.h"
+#include "unsigned/graph.h"
+#include "signed/signedGraph.h"
 
 typedef struct {
     uint64_t ID;
-    uint64_t degree;
+    uint64_t priority;
 } tuple;
 
-tuple *orderedList(const Graph *graph);
 tuple *orderedSetList(const Graph *graph, const uint64_t *IDsList);
 void mergeSort(tuple *arr, uint64_t left, uint64_t right);
 void printBits(size_t size, const char* ptr);

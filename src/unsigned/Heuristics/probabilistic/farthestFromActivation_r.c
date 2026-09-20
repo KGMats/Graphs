@@ -1,5 +1,5 @@
-#include "unsigned/Heuristics/probabilistic/farthestFromActivation_r.h"
-#include "unsigned/Algorithms.h"
+#include "unsigned/heuristics/probabilistic/farthestFromActivation_r.h"
+#include "unsigned/algorithms.h"
 #include <stdlib.h>
 #include <float.h>
 #include <stdio.h>

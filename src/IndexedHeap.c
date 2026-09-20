@@ -75,16 +75,13 @@ HeapElement extractMax(IndexedHeap *heap) {
     HeapElement max_element = heap->elements[0];
     heap->positions[max_element.ID] = -1;
 
-    if (heap->size > 1) {
+    if (heap->size > 1)
+    {
         heap->elements[0] = heap->elements[heap->size - 1];
         heap->positions[heap->elements[0].ID] = 0;
-        heap->size--;
         maxHeapify(heap, 0);
-    } else {
-        heap->size--;
     }
-
-
+    heap->size--;
     return max_element;
 }
 
@@ -140,7 +137,7 @@ HeapElement findMax(const IndexedHeap *heap) {
     {
         return (HeapElement) { .ID = (uint64_t)-1, .value = -1.0 } ;
     }
-    
+
     return heap->elements[0];
 }
 

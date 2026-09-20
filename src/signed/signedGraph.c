@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "signed/SignedGraph.h"
+#include "signed/signedGraph.h"
 
 SignedGraph *createSignedGraph(const uint64_t n_nodes) {
     SignedGraph *graph = malloc(sizeof(SignedGraph));
@@ -19,7 +19,6 @@ SignedGraph *createSignedGraph(const uint64_t n_nodes) {
         perror("Erro ao alocar nodes");
         exit(EXIT_FAILURE);
     }
-    graph->n_edges = 0;
     graph->n_nodes = n_nodes;
 
     size_t n_chunks = (n_nodes / 40) + 1;
@@ -35,7 +34,7 @@ SignedNode *createSignedNode(const SignedGraph *graph, const uint64_t ID, const 
     }
     node->ID = ID;
     node->neighbors = calloc(n_edges, sizeof(SignedNode*));
-    node->n_neighbors = 0;
+    node->degree = 0;
     node->n_active_neighbors = 0;
     graph->nodes[ID] = node;
     return node;
@@ -47,7 +46,6 @@ SignedGraph *createSignedGraphFromFilename(const char *filename) {
     int edge_signal = 0;
 
     uint64_t *n_edges = calloc(MAX_NODES, sizeof(uint64_t));
-    uint64_t n_total_edges = 0;
 
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -58,7 +56,6 @@ SignedGraph *createSignedGraphFromFilename(const char *filename) {
     while (3 == fscanf(file, "%lu %lu %d", &id1, &id2, &edge_signal)) {
         n_edges[id1] += 1;
         n_edges[id2] += 1;
-        n_total_edges += 1;
     }
 
     fclose(file);
@@ -72,7 +69,6 @@ SignedGraph *createSignedGraphFromFilename(const char *filename) {
     }
 
     SignedGraph *graph = createSignedGraph(n_nodes);
-    graph->n_edges = n_total_edges;
 
     for (int i = 0; i < n_nodes; i++) {
         createSignedNode(graph, i, n_edges[i]);
@@ -89,8 +85,11 @@ SignedGraph *createSignedGraphFromFilename(const char *filename) {
         SignedNode *n2 = graph->nodes[id2];
 
         int is_positive = (edge_signal == 1);
-        n1->neighbors[n1->n_neighbors++] = tag_ptr(n2, is_positive);
-        n2->neighbors[n2->n_neighbors++] = tag_ptr(n1, is_positive);
+        n1->neighbors[n1->degree++] = tag_ptr(n2, is_positive);
+        n1->positive_edges += is_positive;
+
+        n2->neighbors[n2->degree++] = tag_ptr(n1, is_positive);
+        n2->positive_edges += is_positive;
     }
 
     fclose(file);
@@ -112,11 +111,12 @@ static const uint64_t POW3[40] = {
 };
 
 int getSignedNodeState(const uint64_t *activeNodesArray, const uint64_t id) {
+    int signals[] = {0, 1, -1};
     uint64_t idx_chunk = id / 40;
     uint_fast8_t idx_local = id % 40;
-    
+
     uint64_t chunk = activeNodesArray[idx_chunk];
-    return (int)((chunk / POW3[idx_local]) % 3);
+    return signals[((chunk / POW3[idx_local]) % 3)];
 }
 
 void setSignedNodeState(uint64_t *activeNodesArray, const uint64_t id, const int newState) {
@@ -127,8 +127,9 @@ void setSignedNodeState(uint64_t *activeNodesArray, const uint64_t id, const int
     uint64_t p = POW3[idx_local];
     
     int currentState = (int)((chunk / p) % 3);
+    int stateVal = (newState == -1) ? 2 : newState;
     
-    chunk = chunk - (currentState * p) + (newState * p);
+    chunk = chunk - (currentState * p) + (stateVal * p);
 
     activeNodesArray[idx_chunk] = chunk;
 }
@@ -145,11 +146,12 @@ void activateSignedFromFile(const SignedGraph *graph, const char *filename) {
     while (1 == fscanf(file, "%lu", &id)) {
         setSignedNodeState(graph->active_nodes, id, 1);
         const SignedNode* node = graph->nodes[id];
-        for (uint64_t i = 0; i < node->n_neighbors; i++) {
+        for (uint64_t i = 0; i < node->degree; i++) {
             SignedNode *tagged_neighbor = node->neighbors[i];
             SignedNode *clean_neighbor = get_clean_ptr(tagged_neighbor);
+            int edge_sign = get_edge_sign(tagged_neighbor);
 
-            clean_neighbor->n_active_neighbors++;
+            clean_neighbor->n_active_neighbors += edge_sign;
         }
     }
     fclose(file);
@@ -159,11 +161,12 @@ void activateSignedFromIDArray(const SignedGraph *graph, const uint64_t *IDs, co
     for (uint64_t i = 0; i < n_ids; i++) {
         setSignedNodeState(graph->active_nodes, IDs[i], 1);
         const SignedNode *node = graph->nodes[IDs[i]];
-        for (uint64_t j = 0; j < node->n_neighbors; j++) {
+        for (uint64_t j = 0; j < node->degree; j++) {
             SignedNode *tagged_neighbor = node->neighbors[j];
             SignedNode *clean_neighbor = get_clean_ptr(tagged_neighbor);
+            int edge_sign = get_edge_sign(tagged_neighbor);
 
-            clean_neighbor->n_active_neighbors++;
+            clean_neighbor->n_active_neighbors += edge_sign;
         }
     }
 }
@@ -220,4 +223,9 @@ uint64_t countActiveSignedNodes(const SignedGraph* graph) {
         }
     }
     return count;
+}
+
+uint64_t threshold(SignedNode* node)
+{
+    return 1;
 }

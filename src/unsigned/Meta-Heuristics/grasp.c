@@ -5,11 +5,11 @@
 #include <time.h>
 #include <string.h>
 
-#include "unsigned/Graph.h"
+#include "unsigned/graph.h"
 
 uint64_t GRASP(Graph *graph, unsigned int max_iterations,
-               const int seed, const bool randomGreedyFunction(const Graph *, uint64_t *result, const uint64_t),
-               const uint64_t localSearchFunction(const Graph *graph, uint64_t *bestSolution, uint64_t nActiveNodes)) {
+               const int seed, bool randomGreedyFunction(const Graph *, uint64_t *result, const uint64_t),
+               uint64_t localSearchFunction(const Graph *graph, uint64_t *bestSolution, uint64_t nActiveNodes)) {
     srand(seed);
     float multiplier = 0.5f;
 

@@ -1,16 +1,10 @@
-//
-// Created by Elon Pereira Neto on 24/10/25.
-//
+#ifndef SIGNED_TARJAN_H
+#define SIGNED_TARJAN_H
+#include <stdint.h>
+#include "signed/signedGraph.h"
+#include "signed/heuristics/deterministic/tarjan.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-
-#include "Stack.h"
-#include "unsigned/Heuristics/deterministic/Tarjan.h"
-
-
-
-uint64_t min(const uint64_t a, const uint64_t b) {
+inline uint64_t min(const uint64_t a, const uint64_t b) {
     return (a < b) ? a : b;
 }
 
@@ -141,3 +135,5 @@ void dfs_AP(Node *startNode, char *visited, uint64_t disc[], uint64_t low[], uin
         }
     }
 }
+
+#endif

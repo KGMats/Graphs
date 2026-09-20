@@ -2,19 +2,19 @@
 #define SEMNOME_SOLUTIONS_H
 
 
-#include "unsigned/Graph.h"
+#include "unsigned/graph.h"
 
 // Heuristicas Deterministicas
-#include "unsigned/Heuristics/deterministic/MaximumDegreeHeuristic.h"
-#include "unsigned/Heuristics/deterministic/bridgeHeuristic.h"
-#include "unsigned/LocalSearch/hillClimb.h"
-#include "unsigned/Heuristics/deterministic/farthestFromActivationHeuristic.h"
+#include "unsigned/heuristics/deterministic/maximumDegreeHeuristic.h"
+#include "unsigned/heuristics/deterministic/bridgeHeuristic.h"
+#include "unsigned/localSearch/hillClimb.h"
+#include "unsigned/heuristics/deterministic/farthestFromActivationHeuristic.h"
 
 // Heuristicas probabilisticas
-#include "unsigned/Heuristics/probabilistic/farthestFromActivation_r.h"
-#include "unsigned/Heuristics/probabilistic/fullRandomHeuristic.h"
+#include "unsigned/heuristics/probabilistic/farthestFromActivation_r.h"
+#include "unsigned/heuristics/probabilistic/fullRandomHeuristic.h"
 
 // Meta-Heuristicas
-#include "unsigned/Meta-Heuristics/grasp.h"
+#include "unsigned/metaHeuristics/grasp.h"
 
 #endif //SEMNOME_SOLUTIONS_H

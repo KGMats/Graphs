@@ -2,11 +2,11 @@
 // Created by ra173048 on 10/27/25.
 //
 
-#include "unsigned/Heuristics/probabilistic/fullRandomHeuristic.h"
+#include "unsigned/heuristics/probabilistic/fullRandomHeuristic.h"
 
 #include <stdlib.h>
 
-#include "unsigned/Algorithms.h"
+#include "unsigned/algorithms.h"
 
 bool fullRandomHeuristic(const Graph *graph, uint64_t *result, uint64_t initialActiveNodes) {
     for (uint64_t i = 0; i < initialActiveNodes; i++) {

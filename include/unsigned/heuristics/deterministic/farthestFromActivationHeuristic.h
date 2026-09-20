@@ -1,6 +1,6 @@
 #ifndef SEMNOME_FARTHESTFROMACTIVATIONHEURISTIC_H
 #define SEMNOME_FARTHESTFROMACTIVATIONHEURISTIC_H
-#include "../../../unsigned/Graph.h"
+#include "unsigned/graph.h"
 
 bool farthestFromActivationHeuristic(const Graph *graph, uint64_t *result, uint64_t initialActiveNodes);
 

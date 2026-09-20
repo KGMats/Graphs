@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "unsigned/Graph.h"
+#include "unsigned/graph.h"
 
 
 Graph *createGraph(const uint64_t n_nodes) {

@@ -3,12 +3,15 @@
 
 #include <stdlib.h>
 
-#include "Graph.h"
+#include "unsigned/graph.h"
 
+#ifndef PROPAGATION_RESULT_DEFINED
+#define PROPAGATION_RESULT_DEFINED
 typedef struct {
     uint64_t count;
     uint64_t *activated_nodes;
 } PropagationResult;
+#endif
 
 PropagationResult propagate(const Graph *graph);
 

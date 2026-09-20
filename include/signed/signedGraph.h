@@ -10,13 +10,13 @@
 typedef struct SignedNode SignedNode;
 struct SignedNode {
     uint64_t ID;
-    uint64_t n_neighbors;
-    uint64_t n_active_neighbors;
+    uint64_t degree;
+    uint64_t positive_edges;
+    int64_t n_active_neighbors;
     SignedNode **neighbors;
 };
 
 typedef struct SignedGraph {
-    uint64_t n_edges;
     uint64_t n_nodes;
     SignedNode **nodes;
     uint64_t *active_nodes;
@@ -52,5 +52,7 @@ void deactivateAllSigned(const SignedGraph *graph);
 void freeSignedGraph(SignedGraph *graph);
 void saveSignedGraphToFile(const SignedGraph *graph, const char *filename);
 uint64_t countActiveSignedNodes(const SignedGraph *graph);
+uint64_t threshold(SignedNode* node);
+
 
 #endif //SIGNED_GRAPH_H

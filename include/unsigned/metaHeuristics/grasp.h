@@ -4,7 +4,7 @@
 
 #ifndef GRAFOS_GRASP_H
 #define GRAFOS_GRASP_H
-#include "../../unsigned/Graph.h"
+#include "unsigned/graph.h"
 
 uint64_t GRASP(Graph *graph, const unsigned int max_iterations,
                const int seed, const bool randomGreedyFunction(const Graph *, uint64_t *result, const uint64_t),

@@ -8,17 +8,6 @@
 #include "Utils.h"
 
 
-tuple *orderedList(const Graph *graph) {
-    tuple *list = malloc(sizeof(tuple) * graph->n_nodes);
-    for (int i = 0; i < graph->n_nodes; i++) {
-        list[i].ID = i;
-        list[i].degree = graph->nodes[i]->n_neighbors;
-    }
-
-    mergeSort(list, 0, graph->n_nodes - 1);
-
-    return list;
-}
 
 tuple *orderedSetList(const Graph *graph, const uint64_t *IDsList) {
     const uint64_t n_nodes = graph->n_nodes;
@@ -26,7 +15,7 @@ tuple *orderedSetList(const Graph *graph, const uint64_t *IDsList) {
     tuple *list = calloc(n_nodes,sizeof(tuple));
     for (uint64_t i = 0; IDsList[i] != UINT64_MAX; i++) {
         list[i].ID = IDsList[i];
-        list[i].degree = graph->nodes[IDsList[i]]->n_neighbors;
+        list[i].priority = graph->nodes[IDsList[i]]->n_neighbors;
         n_ids++;
     }
 
@@ -37,7 +26,7 @@ tuple *orderedSetList(const Graph *graph, const uint64_t *IDsList) {
 
         if (!isInList) {
             list[id_search + n_ids].ID = i;
-            list[id_search + n_ids].degree = graph->nodes[i]->n_neighbors;
+            list[id_search + n_ids].priority = graph->nodes[i]->n_neighbors;
             id_search++;
         }
     }
@@ -65,7 +54,7 @@ void merge(tuple *arr, const uint64_t left, const uint64_t mid, const uint64_t r
     uint64_t i = 0, j = 0, k = left;
 
     while (i < n1 && j < n2) {
-        if (L[i].degree <= R[j].degree)
+        if (L[i].priority <= R[j].priority)
             arr[k++] = L[i++];
         else
             arr[k++] = R[j++];

@@ -6,10 +6,11 @@
 #define SEMNOME_LINKEDLIST_H
 
 #include <stdint.h>
-#include "../include/unsigned/Graph.h"
+#include "unsigned/graph.h"
 
+// TODO: Refatorar para usar vetor dinamico ao inves de linked list.
 typedef struct StackFrame {
-    Node* u;
+    void* u;
     uint64_t neighbor_idx;  // O índice do próximo vizinho a ser explorado
 } StackFrame;
 
