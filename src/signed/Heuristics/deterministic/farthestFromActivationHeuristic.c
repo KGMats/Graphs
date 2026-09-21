@@ -3,9 +3,9 @@
 #include "signed/algorithms.h"
 #include "signed/heuristics/deterministic/farthestFromActivationHeuristic.h"
 
-bool farthestFromActivationHeuristicSigned(const SignedGraph *graph, uint64_t *result, const uint64_t initialActiveNodes, uint64_t steps) {
+uint64_t farthestFromActivationHeuristicSigned(const SignedGraph *graph, uint64_t *result, const uint64_t initialActiveNodes, uint64_t steps) {
     if (initialActiveNodes < 1) {
-        return false;
+        return 0;
     }
 
     // Creating a heap to use as a priority-queue to select the nodes based on how distant
@@ -76,5 +76,5 @@ bool farthestFromActivationHeuristicSigned(const SignedGraph *graph, uint64_t *r
         iterations--;
     }
     freeIndexedHeap(heap);
-    return signedRunTest(graph, result, 0, steps);
+    return selectedCount;
 }

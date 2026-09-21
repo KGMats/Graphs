@@ -4,6 +4,6 @@
 #include <stdbool.h>
 #include "signed/signedGraph.h"
 
-bool farthestFromActivationHeuristicSigned(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t steps);
+uint64_t farthestFromActivationHeuristicSigned(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t steps);
 
 #endif

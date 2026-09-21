@@ -20,6 +20,7 @@ typedef struct signedGraph {
     uint64_t n_nodes;
     SignedNode **nodes;
     uint64_t *active_nodes;
+    uint64_t *original_ids;
 } SignedGraph;
 
 static inline SignedNode* get_clean_ptr(const SignedNode *ptr) {
@@ -47,12 +48,15 @@ void setSignedNodeState(uint64_t *activeSignedNodesArray, uint64_t id, int newSt
 int getSignedNodeState(const uint64_t *activeSignedNodesArray, uint64_t id);
 SignedGraph *createSignedGraphFromFilename(const char *filename);
 void activateSignedFromFile(const SignedGraph *graph, const char *filename);
+bool signedGraphIndexOf(const SignedGraph *graph, uint64_t originalId, uint64_t *index);
 void activateSignedFromIDArray(const SignedGraph *graph, const uint64_t *IDs, uint64_t n_ids);
 void deactivateAllSigned(const SignedGraph *graph);
 void freeSignedGraph(SignedGraph *graph);
 void saveSignedGraphToFile(const SignedGraph *graph, const char *filename);
 uint64_t countActiveSignedNodes(const SignedGraph *graph);
 uint64_t threshold(SignedNode* node);
-
+static inline int64_t signedNodeBalance(const SignedNode *n) {
+    return 2 * (int64_t)n->positive_edges - (int64_t)n->degree;
+}
 
 #endif //SIGNED_GRAPH_H

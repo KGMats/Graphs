@@ -2,15 +2,28 @@
 #include "signed/algorithms.h"
 #include "signed/heuristics/deterministic/fullRandomHeuristic.h"
 
+// rand() so garante 15 bits em algumas plataformas; combina varias chamadas para cobrir grafos grandes.
+static uint64_t rand64(void) {
+    return ((uint64_t) rand() << 45) ^ ((uint64_t) rand() << 30) ^ ((uint64_t) rand() << 15) ^ (uint64_t) rand();
+}
 
-bool fullRandomHeuristicSigned(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t steps)
+// Sorteia k nos distintos (Fisher-Yates parcial). O primeiro elemento sorteado e o primeiro de `result`,
+// entao os prefixos tambem sao amostras aleatorias sem reposicao.
+uint64_t fullRandomHeuristicSigned(const SignedGraph *graph, uint64_t *result, const uint64_t initialActiveNodes, const uint64_t steps)
 {
-    for (uint64_t i = 0; i < initialActiveNodes; i++) {
-        result[i] = rand() % graph->n_nodes;
+    (void) steps;
+    const uint64_t n = graph->n_nodes;
+    const uint64_t selected = initialActiveNodes < n ? initialActiveNodes : n;
+
+    uint64_t *ids = malloc(sizeof(uint64_t) * n);
+    for (uint64_t i = 0; i < n; i++) ids[i] = i;
+
+    for (uint64_t i = 0; i < selected; i++) {
+        const uint64_t j = i + rand64() % (n - i);
+        const uint64_t tmp = ids[i]; ids[i] = ids[j]; ids[j] = tmp;
+        result[i] = ids[i];
     }
 
-    const PropagationResult propagationResult = signedPartialPropagate(graph, initialActiveNodes, result, steps);
-    free(propagationResult.activated_nodes);
-    // TODO: Pensar nos valores de retorno nas funcoes de propagacao. Usar número de vértices positivamente influenciados?
-    return 1;
+    free(ids);
+    return selected;
 }

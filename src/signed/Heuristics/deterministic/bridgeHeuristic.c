@@ -10,10 +10,11 @@
 #include "signed/heuristics/deterministic/bridgeHeuristic.h"
 
 // Heuristica das pontes.
-bool bridgeHeuristicSigned(const SignedGraph *graph, uint64_t *result, const uint64_t initialActiveNodes, uint64_t steps) {
+uint64_t bridgeHeuristicSigned(const SignedGraph *graph, uint64_t *result, const uint64_t initialActiveNodes, uint64_t steps) {
     uint64_t counter = 0;
 
     uint64_t *changedNodes = malloc(sizeof(uint64_t) * graph->n_nodes);
+    bool* isArticulation = calloc(graph->n_nodes, sizeof(bool));
     uint64_t n_changed = 0;
 
     // Encontrando os candidatos a nos "Ponto de articulação"
@@ -27,33 +28,35 @@ bool bridgeHeuristicSigned(const SignedGraph *graph, uint64_t *result, const uin
     tuple *list = calloc(n_nodes,sizeof(tuple));
     for (uint64_t i = 0; tarjanSolutions[i] != UINT64_MAX; i++) {
         list[i].ID = tarjanSolutions[i];
-
         SignedNode *node = graph->nodes[list[i].ID];
-
-        list[i].priority = (node->positive_edges - (node->degree - node->positive_edges));
+        list[i].priority = signedNodeBalance(node);
+        isArticulation[list[i].ID] = true;
         n_ids++;
     }
 
-    uint64_t id_search = 0;
-    for (uint64_t i = 0; i < n_nodes; i++) {
-        bool isInList = false;
-        for (uint64_t j = 0; j < n_ids; j++) if (i == tarjanSolutions[j]) isInList = true;
 
-        if (!isInList) {
-            list[id_search + n_ids].ID = i;
-            list[id_search + n_ids].priority = graph->nodes[i]->degree;
-            id_search++;
+
+    uint64_t id_search = 0;
+    for (uint64_t i = 0; tarjanSolutions[i] != UINT64_MAX; i++)
+    {
+        if (isArticulation[i])
+        {
+            continue;
         }
+        list[n_ids + id_search].ID = i;
+        list[n_ids + id_search].priority = signedNodeBalance(graph->nodes[i]);
+        id_search++;
     }
 
-    mergeSort(list, 0, n_ids - 1);
+
+    if (n_ids != 0)
+    {
+        mergeSort(list, 0, n_ids - 1);
+    }
     mergeSort(list, n_ids, n_nodes - 1);
 
 
-    n_ids = 0;
-    for (uint64_t i = 0; tarjanSolutions[i] != UINT64_MAX; i++) n_ids++;
-
-    for (uint64_t i = n_ids - 1; i > 0 && counter < initialActiveNodes; i--) {
+    for (uint64_t i = n_ids - 1; i != UINT64_MAX && counter < initialActiveNodes; i--) {
         const uint64_t nodeID = list[i].ID;
 
         if (getSignedNodeState(graph->active_nodes, nodeID)) continue;
@@ -78,6 +81,7 @@ bool bridgeHeuristicSigned(const SignedGraph *graph, uint64_t *result, const uin
     free(changedNodes);
     free(list);
     free(tarjanSolutions);
+    free(isArticulation);
 
-    return signedRunTest(graph, result, initialActiveNodes, steps);
+    return counter;
 }

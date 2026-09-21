@@ -20,6 +20,12 @@ int main(const int argc, char **argv) {
 
     bool isSigned = false;
     uint64_t steps = 10;
+    uint64_t runs = 0;              // 0 = padrao da heuristica (5 para random, 1 para as demais)
+    bool showTrace = false;
+    uint64_t ks[32];
+    uint64_t n_ks = 0;
+    double fractions[16];
+    uint64_t n_fractions = 0;
     const char *positional[3] = {NULL, NULL, NULL};
     int posCount = 0;
 
@@ -35,6 +41,19 @@ int main(const int argc, char **argv) {
             }
         } else if (strncmp(argv[i], "--steps=", 8) == 0) {
             steps = strtoull(argv[i] + 8, NULL, 10);
+        } else if (strcmp(argv[i], "--runs") == 0 && i + 1 < argc) {
+            runs = strtoull(argv[++i], NULL, 10);
+        } else if (strcmp(argv[i], "--trace") == 0) {
+            showTrace = true;
+        } else if (strcmp(argv[i], "--k") == 0 && i + 1 < argc) {
+            // orcamentos absolutos separados por virgulas, ex.: 1,5,10,50
+            for (char *tok = strtok(argv[++i], ","); tok && n_ks < 32; tok = strtok(NULL, ","))
+                ks[n_ks++] = strtoull(tok, NULL, 10);
+        } else if (strcmp(argv[i], "--fractions") == 0 && i + 1 < argc) {
+            // lista separada por virgulas, ex.: 0.001,0.01,0.05
+            char *list = argv[++i];
+            for (char *tok = strtok(list, ","); tok && n_fractions < 16; tok = strtok(NULL, ","))
+                fractions[n_fractions++] = strtod(tok, NULL);
         } else if (argv[i][0] == '-') {
             fprintf(stderr, "Aviso: Opção desconhecida '%s'\n", argv[i]);
         } else {
@@ -51,6 +70,10 @@ int main(const int argc, char **argv) {
         fprintf(stderr, "Opções:\n");
         fprintf(stderr, "  -s, --signed         Indica que o grafo é sinalizado\n");
         fprintf(stderr, "  -t, --steps <num>    Passos de propagação para grafos sinalizados (padrão: 10)\n");
+        fprintf(stderr, "  --runs <num>         Execuções (média); padrão: 5 para random, 1 para as demais\n");
+        fprintf(stderr, "  --k <lista>          Orçamentos k a avaliar, ex.: 1,5,10,50 (padrão: 1,2,5,10,... até 2%% de n)\n");
+        fprintf(stderr, "  --fractions <lista>  Alternativa a --k, em frações de n, ex.: 0.001,0.01\n");
+        fprintf(stderr, "  --trace              Mostra a trajetória (positivos por passo) do maior k\n");
         return 1;
     }
 
@@ -63,7 +86,7 @@ int main(const int argc, char **argv) {
         if (!graph) return 1;
 
         // Ponteiros para funções de heurísticas sinalizadas
-        bool (*signedHeuristicFunc)(const SignedGraph*, uint64_t*, uint64_t, uint64_t) = NULL;
+        SignedHeuristic signedHeuristicFunc = NULL;
 
         if (strcmp(heuristicName, "maxdegree") == 0) {
             signedHeuristicFunc = maximumDegreeHeuristicSigned;
@@ -84,7 +107,21 @@ int main(const int argc, char **argv) {
 
         // --- SELETOR DE MODO SINALIZADO ---
         if (strcmp(modeStr, "simple") == 0) {
-            signedTestHeuristics(graph, signedHeuristicFunc, steps);
+            if (n_ks == 0) {   // --fractions -> valores absolutos (crescentes, sem repeticao)
+                for (uint64_t i = 0; i < n_fractions; i++) {
+                    uint64_t k = (uint64_t) (fractions[i] * (double) graph->n_nodes + 0.999999);
+                    if (k >= 1 && (n_ks == 0 || k > ks[n_ks - 1])) ks[n_ks++] = k;
+                }
+            }
+            SignedBenchConfig cfg = {
+                .t = steps,
+                .runs = runs ? runs : (strcmp(heuristicName, "random") == 0 ? 5 : 1),
+                .seed = RAND_SEED,
+                .trace = showTrace,
+                .ks = n_ks ? ks : NULL,
+                .n_ks = n_ks,
+            };
+            signedTestHeuristics(graph, signedHeuristicFunc, &cfg);
         } else if (strcmp(modeStr, "hillclimb") == 0 || strcmp(modeStr, "grasp") == 0) {
             printf("Aviso: O modo '%s' ainda não foi adaptado para grafos sinalizados.\n", modeStr);
         } else {

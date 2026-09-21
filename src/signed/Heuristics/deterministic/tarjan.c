@@ -1,5 +1,3 @@
-#ifndef SIGNED_TARJAN_H
-#define SIGNED_TARJAN_H
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,7 +13,8 @@ static inline uint64_t min(const uint64_t a, const uint64_t b) {
 
 
 // Função auxiliar de dfs utilizada pelo Algoritmo de Tarjan
-static void dfs_AP(SignedNode *startNode, char *visited, uint64_t disc[], uint64_t low[], uint64_t parent[], char *isAP, uint64_t *time) {
+static uint64_t dfs_AP(SignedNode *startNode, char *visited, uint64_t disc[], uint64_t low[], uint64_t parent[], char *isAP, uint64_t *time) {
+    uint64_t root_children = 0;
     LinkedList* stack = NULL;
 
     // Cria e empilha o primeiro estado para o nó inicial
@@ -55,6 +54,10 @@ static void dfs_AP(SignedNode *startNode, char *visited, uint64_t disc[], uint64
             } else {
                 // Se não foi visitado, definimos o pai e empilhamos um novo estado para 'v'
                 parent[v_id] = u_id;
+                if (u_id == startNode->ID)
+                {
+                    root_children++;
+                }
 
                 StackFrame* new_frame = malloc(sizeof(StackFrame));
                 new_frame->u = v;
@@ -68,6 +71,12 @@ static void dfs_AP(SignedNode *startNode, char *visited, uint64_t disc[], uint64
             // Se 'u' não for a raiz de uma árvore DFS, ele atualiza o low-link de seu pai
             if (p_id != UINT64_MAX) {
                 low[p_id] = min(low[p_id], low[u_id]);
+
+                if (parent[p_id] != UINT64_MAX && low[p_id] < disc[parent[p_id]])
+                {
+                    setNodeState(isAP, p_id, 1);
+
+                }
 
                 // E o pai verifica se é um ponto de articulação devido a 'u'
                 if (low[u_id] >= disc[p_id]) {
@@ -90,8 +99,8 @@ uint64_t* tarjanSigned(const SignedGraph* graph) {
     uint64_t* disc = malloc(n_nodes * sizeof(uint64_t));
     uint64_t* low = malloc(n_nodes * sizeof(uint64_t));
     uint64_t* parent = malloc(n_nodes * sizeof(uint64_t));
-    char* visited = malloc((n_nodes / 8) + 1);
-    char* isAP = malloc((n_nodes / 8) + 1);
+    char* visited = calloc((n_nodes / 8) + 1, sizeof(char));
+    char* isAP = calloc((n_nodes / 8) + 1, sizeof(char));
     uint64_t* solutions = malloc(n_nodes * sizeof(uint64_t));
     uint64_t n_solutions = 0;
     uint64_t time = 0;
@@ -110,17 +119,10 @@ uint64_t* tarjanSigned(const SignedGraph* graph) {
         if (!getNodeState(visited, i)) {
             SignedNode* start_node = graph->nodes[i];
 
-            // Inicia o DFS iterativo
-            dfs_AP(start_node, visited, disc, low, parent, isAP, &time);
-
             // A REGRA DA RAIZ precisa ser verificada aqui, após o término do DFS
             // para um componente. Contamos quantos filhos a raiz teve.
-            int root_children = 0;
-            for (uint64_t j = 0; j < n_nodes; j++) {
-                if (parent[j] == start_node->ID) {
-                    root_children++;
-                }
-            }
+            const uint64_t root_children = dfs_AP(start_node, visited, disc, low, parent, isAP, &time);
+
             if (root_children > 1) {
                 setNodeState(isAP, start_node->ID, 1);
             }
@@ -140,6 +142,3 @@ uint64_t* tarjanSigned(const SignedGraph* graph) {
     free(isAP);
     return solutions;
 }
-
-
-#endif

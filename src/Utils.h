@@ -12,7 +12,7 @@
 
 typedef struct {
     uint64_t ID;
-    uint64_t priority;
+    int64_t priority;
 } tuple;
 
 tuple *orderedSetList(const Graph *graph, const uint64_t *IDsList);

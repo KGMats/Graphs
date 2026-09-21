@@ -10,6 +10,6 @@
 
 #include "signed/signedGraph.h"
 
-bool bridgeHeuristicSigned(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t steps);
+uint64_t bridgeHeuristicSigned(const SignedGraph *graph, uint64_t *result, uint64_t initialActiveNodes, uint64_t steps);
 
 #endif
