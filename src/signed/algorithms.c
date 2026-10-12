@@ -291,6 +291,8 @@ void signedTestHeuristics(const SignedGraph *graph, const SignedHeuristic heuris
 
         double t0 = nowSeconds();
         const uint64_t selected = heuristic(graph, seeds, k_max, t);
+
+
         heuristic_time += nowSeconds() - t0;
         if (selected < min_selected) min_selected = selected;
 

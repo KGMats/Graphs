@@ -432,6 +432,6 @@ uint64_t countActiveSignedNodes(const SignedGraph* graph) {
 
 uint64_t threshold(SignedNode* node)
 {
-    return 1;
+     return ceil(node->degree * .40f);
 }
 

@@ -3,20 +3,26 @@
 #include "signed/algorithms.h"
 #include "signed/heuristics/deterministic/farthestFromActivationHeuristic.h"
 
+
+
+static double calculateMissing(SignedNode *node) {
+    return (double) threshold(node) - (double) node->n_active_neighbors;
+}
+
 uint64_t farthestFromActivationHeuristicSigned(const SignedGraph *graph, uint64_t *result, const uint64_t initialActiveNodes, uint64_t steps) {
+
     if (initialActiveNodes < 1) {
         return 0;
     }
 
     // Creating a heap to use as a priority-queue to select the nodes based on how distant
-    // The node is from being active.
-
+    // the node is from being active.
     IndexedHeap *heap = createIndexedHeap(graph->n_nodes);
-    for (uint64_t i = 0; i < graph->n_nodes; i++) {
-        SignedNode *node = graph->nodes[i];
+    for (uint64_t nodeIndex = 0; nodeIndex < graph->n_nodes; nodeIndex++) {
+        SignedNode *node = graph->nodes[nodeIndex];
         HeapElement element = {
-            .ID = i,
-            .value = node->positive_edges - (node->degree - node->positive_edges)
+            .ID = nodeIndex,
+            .value = calculateMissing(node)
         };
         insertIndexedHeap(heap, element);
     }
@@ -27,54 +33,37 @@ uint64_t farthestFromActivationHeuristicSigned(const SignedGraph *graph, uint64_
     while (iterations >= 1 && !isEmpty(heap)) {
         // Getting the top of the heap
         HeapElement maxElement = extractMax(heap);
-        uint64_t ID = maxElement.ID;
+        uint64_t selectedNodeID = maxElement.ID;
 
-        bool wasAlreadyActive = getSignedNodeState(graph->active_nodes, ID);
+        bool wasAlreadyActive = (getSignedNodeState(graph->active_nodes, selectedNodeID) == 1);
 
-
-        // adding the node ID to the solution array
-        result[selectedCount++] = ID;
-
+        // Adding the node ID to the solution array
+        result[selectedCount++] = selectedNodeID;
 
         // Propagating the node influence
-        PropagationResult p = {0, NULL};
+        PropagationResult propagationResult = {0, NULL};
         if (!wasAlreadyActive) {
-            p = signedPartialPropagate(graph, 1, &ID, steps);
+            int s = (steps - iterations) < steps / 2 ? steps - iterations : steps / 2; 
+            propagationResult = signedPartialPropagate(graph, 1, &selectedNodeID, s);
         }
 
-        if (!wasAlreadyActive) {
-            const SignedNode *selectedNode = graph->nodes[ID];
-            for (uint64_t i = 0; i < selectedNode->degree; i++) {
-                SignedNode *neighbor = get_clean_ptr(selectedNode->neighbors[i]);
-                uint64_t neighborID = neighbor->ID;
-
-                if (!getSignedNodeState(graph->active_nodes, neighborID)) {
-                    double newValue = neighbor->positive_edges - (neighbor->degree - neighbor->positive_edges);
-                    update(heap, neighborID, newValue);
-                }
-            }
-        }
-
-        // Updating the priorities for the activated nodes and their neighbors
-        for (uint64_t i = 0; i < p.count; i++) {
-            uint64_t activatedNodeID = p.activated_nodes[i];
-            const SignedNode *activatedNode = graph->nodes[activatedNodeID];
-            removeIndexedHeap(heap, activatedNodeID);
+        // Updating priorities for the activated nodes and their neighbors
+        for (uint64_t i = 0; i < propagationResult.count; i++) {
+            uint64_t activatedNodeID = propagationResult.activated_nodes[i];
+            SignedNode *activatedNode = graph->nodes[activatedNodeID];
+            update(heap, activatedNodeID, calculateMissing(activatedNode));
 
             for (uint64_t j = 0; j < activatedNode->degree; j++) {
-                SignedNode *neighbor = get_clean_ptr(activatedNode->neighbors[j]);
-                uint64_t neighborID = neighbor->ID;
-
-                if (!getSignedNodeState(graph->active_nodes, neighborID)) {
-                    double newValue = neighbor->positive_edges - (neighbor->degree - neighbor->positive_edges);
-                    update(heap, neighborID, newValue);
-                }
+                SignedNode *neighborNode = get_clean_ptr(activatedNode->neighbors[j]);
+                uint64_t neighborID = neighborNode->ID;
+                update(heap, neighborID, calculateMissing(neighborNode));
             }
         }
 
-        free(p.activated_nodes);
+        free(propagationResult.activated_nodes);
         iterations--;
     }
+
     freeIndexedHeap(heap);
     return selectedCount;
 }
